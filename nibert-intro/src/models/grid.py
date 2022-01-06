@@ -2,56 +2,63 @@ import numpy as np
 import math
 from coordinate import coordinate
 import random
+from decimal import Decimal
 
 #lengths in meters, time in seconds
-L=1
-R=.5
+L=Decimal('1')
+R=Decimal('.5')
 xc=.5
 yc=.5
 #zc always=0 since assume inlet of pipe is at z=0
-segmentsize=.2 #Meters
+segmentsize=Decimal('.2') #Meters
 
 class grid:
+    def __init__(self): #constructor
+        self.sliceZ = math.floor(L/segmentsize) #number of slices, math.floor rounds down to nearest interger
+        self.sliceXY = math.floor(2*R/segmentsize) #number of slices in grid is same in xy direction
+
     def build_grid_map(self):
-        sliceZ = math.floor(L/segmentsize) #number of slices, math.floor rounds down to nearest interger
-        sliceXY = math.floor(2*R/segmentsize) #number of squares in grid is same in xy direction
         grid_map = {}
-        for z in range (0, sliceZ):
-            for x in range (0, sliceXY):
-                for y in range (0, sliceXY):
-                    key = str(math.floor(z/segmentsize)) + str(math.floor(x/segmentsize)) + str(math.floor(y/segmentsize))
+        for z in range (0, self.sliceZ):
+            for x in range (0, self.sliceXY): #for every possible value x for every z
+                for y in range (0, self.sliceXY): #ever possible value y for every possible combo zx
+                    #maybe make key segment size*for loop?
+                    #key = str(z*segmentsize)+str(x*segmentsize)+str(y*segmentsize)
+                    test = segmentsize * 3
+                    test2 = 2 * segmentsize
+                    key = str(z*segmentsize) + '-' + str(x*segmentsize) + '-' + str(y*segmentsize)
                     grid_map[key] = 0
         
         return grid_map
 
     def countBubbles(self, radius, num_steps, num_particles, Deff, interval):
-        sliceZ = math.floor(L/segmentsize) #math.floor rounds down to nearest interger
-        sliceXY = math.floor(2*R/segmentsize) #number of squares in grid is same in xy direction
+        # sliceZ = math.floor(L/segmentsize) #math.floor rounds down to nearest interger
+        # sliceXY = math.floor(2*R/segmentsize) #number of squares in grid is same in xy direction
         # gridCoordinates = np.zeros((sliceZ*2*sliceXY,3)) #multidimensional array of every possible location/coordinate cubes, going to populate later
         grid_map = self.build_grid_map()
 
         for i in range (0, num_particles):
-            prev_coordinate = coordinate(radius)
+            prev_coordinate = coordinate(radius, L)
 
             # Add the starting location as a point in the map
-            grid_x = math.floor(prev_coordinate.x/segmentsize)*sliceXY
-            grid_y = math.floor(prev_coordinate.y/segmentsize)*sliceXY
-            grid_z = math.floor(prev_coordinate.z/segmentsize)*sliceZ
+            grid_x = math.floor(prev_coordinate.x/segmentsize)*segmentsize
+            grid_y = math.floor(prev_coordinate.y/segmentsize)*segmentsize
+            grid_z = math.floor(Decimal(prev_coordinate.z)/segmentsize)*segmentsize
 
-            key = str(grid_z) + str(grid_x) + str(grid_y)
+            key = str(grid_z) + '-' + str(grid_x) + '-' + str(grid_y)
             grid_map[key] += 1
 
             for j in range (0, num_steps):
                 psi = np.random.normal(0, 1) #prevcoord=prevcoord bc dont want to store values, just reassign to use for next value
-                prev_coordinate.x=prev_coordinate.x+(psi*np.sqrt(2*Deff*interval)) #change in time is chosen?
-                prev_coordinate.y=prev_coordinate.y+(psi*np.sqrt(2*Deff*interval))
-                prev_coordinate.z=prev_coordinate.z+(psi*np.sqrt(2*Deff*interval))
+                prev_coordinate.x=prev_coordinate.x+Decimal(psi*np.sqrt(2*Deff*interval)) #change in time is chosen?
+                prev_coordinate.y=prev_coordinate.y+Decimal(psi*np.sqrt(2*Deff*interval))
+                prev_coordinate.z=prev_coordinate.z+Decimal(psi*np.sqrt(2*Deff*interval))
 
-                grid_x = math.floor(prev_coordinate.x/segmentsize)
-                grid_y = math.floor(prev_coordinate.y/segmentsize)
-                grid_z = math.floor(prev_coordinate.z/segmentsize)
+                grid_x = math.floor(prev_coordinate.x/segmentsize)*segmentsize
+                grid_y = math.floor(prev_coordinate.y/segmentsize)*segmentsize
+                grid_z = math.floor(prev_coordinate.z/segmentsize)*segmentsize
 
-                key = str(grid_z) + str(grid_x) + str(grid_y)
+                key = str(grid_z) + '-' + str(grid_x) + '-' + str(grid_y)
                 grid_map[key] += 1 
 
         print(grid_map)
@@ -78,4 +85,4 @@ class grid:
         #     rwy[i]=nextCoordinate.y
         #     rwz[i]=nextCoordinate.z
 my_grid = grid()
-my_grid.countBubbles(R, 5,5, .1, .01)
+my_grid.countBubbles(R, 5,5, .00001, .1)
