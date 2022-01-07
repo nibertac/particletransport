@@ -29,4 +29,4 @@ class brownian:
             walk[i]=[wx[i],wy[i],wz[i]]
         print(walk)
 
-        return walk
+        return walk #whenever I call brownian(x,y,z) return the walk

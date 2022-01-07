@@ -12,11 +12,11 @@ colors=cycle('bgrcmykbgrcmykbgrcmykbgrcmyk')
 
 R = .2  # radius of pipe (ft)
 L = 15  # length of pipe (ft)
-runs=5 #particles 
+runs=150 #particles 
 
 #plotttingggggggg
 
-fig=plt.figure(figsize=(10,10),dpi=250)
+fig=plt.figure(figsize=(15,15),dpi=250)
 ax=fig.add_subplot(111, projection='3d')
 ax.grid(False)
 ax.xaxis.pane.fill=ax.yaxis.pane.fill=ax.zaxis.pane.fill=False
@@ -26,7 +26,7 @@ ax.set_zlabel('z')
 
 ziprun=list(range(1,runs+1)) #start at 1,2,3,4...to however many particles
 for i, col in zip(ziprun, colors): #matches each indiv particle to a color for easier tracking   
-    theta = random.uniform(0, 2*math.pi)  # pick any theta 0 to 2pi
+    theta = random.uniform(0, 2*math.pi)  #same chance of picking any theta 0 to 2pi
     x = R*math.cos(theta)  # on edge of pipe
     y = R*math.sin(theta)
     z = random.uniform(0, L)  # random length

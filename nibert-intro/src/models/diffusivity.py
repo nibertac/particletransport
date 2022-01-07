@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from coordinate import coordinate
 
 dP=1400
 mu=.6
@@ -31,11 +32,19 @@ class rwalk:
         #interval time increment, between each step in seconds (assume constant number)
         randomwalk=np.zeros((n_steps+1,3))#all 0's, just determing size:nsteps+1 is # columns/length (add one for start position), 3 rows
         randomwalk[0]=[self.x,self.y,self.z] #initial start position 0
+
+        # initCoordinate = coordinate(R)
     
     # randomly generate motion in x or y dir from starting point
         for i in range(1, n_steps+1): 
             psi[i]=np.random.normal(0, 1) #0 is mean, 1 is std, so goes to the left and right of zero by 1, so -1 to 1. Last number is size (we excluded bc default is 1, and we want one number)
             #rwpt process in each direction
+            # nextCoordinate = initCoordinate.generateCoordinate(interval, Deff)
+            
+            # rwx[i]=nextCoordinate.x
+            # rwy[i]=nextCoordinate.y
+            # rwz[i]=nextCoordinate.z
+
             rwx[i]=rwx[i-1]+(psi[i]*np.sqrt(2*Deff*interval)) #change in time is chosen?
             rwy[i]=rwy[i-1]+(psi[i]*np.sqrt(2*Deff*interval))
             rwz[i]=rwz[i-1]+(psi[i]*np.sqrt(2*Deff*interval))

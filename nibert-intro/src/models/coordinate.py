@@ -7,21 +7,25 @@ xc=Decimal('.5')
 yc=Decimal('.5')
 
 class coordinate:
+
+    x = Decimal('0')
+    y = Decimal('0')
+    z = Decimal('0')
+    vz = Decimal('0')
+    vx = Decimal('0')
+    vy = Decimal('0')
+
     #initializes random walk with x,y,z parameters. self. walk=brownian(x,y,z) bc telling it to define itself
-    def __init__(self, R, L): #constructor
+    def __init__(self): #constructor
+        self.x = 0
+    
+    def generateCoordinate(self, R, L): #constructor
         theta = random.uniform(0, 2*math.pi)
         self.x = R*Decimal(str(math.cos(theta)))+xc  #on edge of pipe not centered at 0
         self.y = R*Decimal(str(math.sin(theta)))+yc
         self.z = Decimal(str(random.uniform(0, float(L))))
     
-#DO I NEED THIS?
-    def generateCoordinate(self, interval, Deff): 
-    # randomly generate motion in x or y dir from starting point
-        psi=np.random.normal(0, 1) #or random.gauss(mu, sigma)
-         #0 is mean, 1 is std, so goes to the left and right of zero by 1, so -1 to 1. Last number is size (we excluded bc default is 1, and we want one number)
-
-        #rwpt process in each direction
-        calcX=self.x+(psi*np.sqrt(2*Deff*interval)) #change in time is chosen?
-        calcY=self.y+(psi*np.sqrt(2*Deff*interval))
-        calcZ=self.z+(psi*np.sqrt(2*Deff*interval))
-        return coordinate(calcX, calcY, calcZ)
+    def calculate_velocity(self, dp, mu, L, R, interval, phi):
+        radius=Decimal(math.sqrt((self.x-xc)**2+(self.y-yc)**2))
+        self.vz=(-dp*(R**2-radius**2))/(4*mu*L*interval*phi)
+       
