@@ -18,7 +18,7 @@ mu=Decimal('.001') #.001 Pa*s = 1 cp
 segmentsize=Decimal('.1') #Meters
 
 class grid:
-    def __init__(self): #constructor
+    def __init__(self): #constructor, empty so grid()
         self.sliceZ = math.ceil(L/segmentsize) #number of slices, math.ceiling rounds up to nearest interger
         if (L%segmentsize == 0): #modulus, if no remainder (pipe is exact number of slices).
             #if pipe ends inbetween slices then add another slice to include edge and exiting particles
@@ -45,8 +45,8 @@ class grid:
         prev_coordinate = coordinate(R)
 
         for i in range (0, num_particles):
-            prev_coordinate.generateCoordinate(radius, L)
-            #store location of point in the hashmap/ python dictionary
+            prev_coordinate.generateCoordinate(radius, L) #why do i need this, so now can use self.x and self.y from gen coord
+            #store location of initial point of each particle in the hashmap/ python dictionary
             grid_x = math.floor(prev_coordinate.x/segmentsize)*segmentsize
             grid_y = math.floor(prev_coordinate.y/segmentsize)*segmentsize
             grid_z = math.floor(Decimal(prev_coordinate.z)/segmentsize)*segmentsize
@@ -54,21 +54,26 @@ class grid:
             key = str(grid_z) + '-' + str(grid_x) + '-' + str(grid_y)
             grid_map[key] += 1
 
-            for j in range (0, num_steps):
-                psi = Decimal(np.random.normal(0, 1)) #prevcoord=prevcoord bc dont want to store values, just reassign to use for next value
+            for j in range (0, num_steps): #creating path of each particle using intial above
+                psi_x = Decimal(np.random.normal(0, 1))
+                psi_y = Decimal(np.random.normal(0, 1))
+                psi_z = Decimal(np.random.normal(0, 1)) #prevcoord=prevcoord bc dont want to store values, just reassign to use for next value
                 row_count += 1
 
                 prev_coordinate.calculate_velocity(dp, mu, L, R, interval, phi)
 
-                prev_coordinate.x = prev_coordinate.x + prev_coordinate.vx + Decimal(psi*np.sqrt(2*Deff*interval)) #change in time is chosen?
-                prev_coordinate.y = prev_coordinate.y + prev_coordinate.vy + Decimal(psi*np.sqrt(2*Deff*interval))
-                prev_coordinate.z = prev_coordinate.z + prev_coordinate.vz + Decimal(psi*np.sqrt(2*Deff*interval))
+                prev_coordinate.x = prev_coordinate.x + prev_coordinate.vx*interval + Decimal(psi_x*np.sqrt(2*Deff*interval)) #change in time is chosen?
+                prev_coordinate.y = prev_coordinate.y + prev_coordinate.vy*interval + Decimal(psi_y*np.sqrt(2*Deff*interval))
+                prev_coordinate.z = prev_coordinate.z + prev_coordinate.vz*interval + Decimal(psi_z*np.sqrt(2*Deff*interval))
 
+                #turn x,y,z into array loc
+                
                 grid_x = math.floor(prev_coordinate.x/segmentsize)*segmentsize
                 grid_y = math.floor(prev_coordinate.y/segmentsize)*segmentsize
 
                 if (prev_coordinate.z < 0 or prev_coordinate.z > L):
                     key = 'out-of-pipe'
+                #add if statement for x and y being out of pipe
                 else:
                     grid_z = math.floor(prev_coordinate.z/segmentsize)*segmentsize
                     key = str(grid_z) + '-' + str(grid_x) + '-' + str(grid_y)

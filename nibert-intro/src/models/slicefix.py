@@ -7,9 +7,9 @@ from decimal import Decimal
 
 #lengths in meters, time in seconds
 L=Decimal('.1')
-R=Decimal('.0508') #4 inch diameter pipe
+R=Decimal('.0508') #also where it is centered 4 inch diameter pipe
 
-phi=Decimal('.2')
+phi=Decimal('1')
 dp=Decimal('.0145') #Pa = psi * .000145
 mu=Decimal('.001') #.001 Pa*s = 1 cp 
 
@@ -36,6 +36,7 @@ class grid:
         grid_map = self.build_grid_map()
         row_count = 0
         prev_coordinate = coordinate(R)
+        out_of_pipe = 0
 
         for i in range (0, num_particles):
             prev_coordinate.generateCoordinate(radius, L) #why do i need this, so now can use self.x and self.y from gen coord
@@ -43,14 +44,15 @@ class grid:
             grid_x = math.ceil(prev_coordinate.x/self.segmentsize)
             grid_y = math.ceil(prev_coordinate.y/self.segmentsize)
             grid_z = math.ceil(Decimal(prev_coordinate.z)/self.segmentsize)
+            
 
-            grid_map[grid_z-1][grid_x-1][grid_y-1] += 1 #index starts at 0, so slice 5 is index 4
+            grid_map[grid_z-1][grid_x-1][grid_y-1] += 1 #add one to this z, x, y location. ex: gridmap[5,3,2] index starts at 0, so slice 5 is index 4
 
-            for j in range (0, num_steps): #creating path of each particle using intial above
+            for j in range (0, num_steps): #creating path of each particle in i number of particles
                 psi_x = Decimal(np.random.normal(0, 1))
                 psi_y = Decimal(np.random.normal(0, 1))
                 psi_z = Decimal(np.random.normal(0, 1)) #prevcoord=prevcoord bc dont want to store values, just reassign to use for next value
-                row_count += 1
+                #row_count += 1 
 
                 prev_coordinate.calculate_velocity(dp, mu, L, R, interval, phi)
 
@@ -58,13 +60,19 @@ class grid:
                 prev_coordinate.y = prev_coordinate.y + prev_coordinate.vy*interval + Decimal(psi_y*np.sqrt(2*Deff*interval))
                 prev_coordinate.z = prev_coordinate.z + prev_coordinate.vz*interval + Decimal(psi_z*np.sqrt(2*Deff*interval))
 
+                print(i, j) #particle then step of particle
+               
                 #turn x,y,z into array loc
-                
                 grid_x = math.ceil(prev_coordinate.x/self.segmentsize)
                 grid_y = math.ceil(prev_coordinate.y/self.segmentsize)
 
-                if (prev_coordinate.z < 0 or prev_coordinate.z > L):
-                    key = 'out-of-pipe'
+                if prev_coordinate.z < 0 or prev_coordinate.z > L or math.sqrt((prev_coordinate.x-prev_coordinate.xc)**2+(prev_coordinate.y-prev_coordinate.yc)**2) > R:
+                    out_of_pipe += 1
+                    print(i, prev_coordinate.x, prev_coordinate.y, prev_coordinate.z) #dont really need print all out of pipe particles
+                    break #stops for this particle, continues for loop for next, once particle is out, its out
+                    #key = 'out-of-pipe'
+                    #grid_map[key] += 1
+        
                 #add if statement for x and y being out of pipe
                 else:
                     grid_z = math.ceil(prev_coordinate.z/self.segmentsize)
@@ -72,10 +80,12 @@ class grid:
             
         print('The Results')
         print(grid_map)
-
+        print('out-of-pipe', out_of_pipe)
 
 
 my_grid = grid(5,R)
-my_grid.countBubbles(R, 5,5, Decimal('2.3E-15'), Decimal('.1'))
+my_grid.countBubbles(R, 5, 5, Decimal('2.3E-15'), Decimal('.1')) 
+
+
 
 
