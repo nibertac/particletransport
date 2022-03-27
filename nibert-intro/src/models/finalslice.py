@@ -2,7 +2,7 @@
 
 import numpy as np
 import math
-from coordinate import coordinate
+#from coordinate import coordinate
 import random
 from decimal import Decimal
 from pipe import pipe
@@ -22,21 +22,24 @@ mu=Decimal('.001') #.001 Pa*s = 1 cp
 #zc always=0 since assume inlet of pipe is at z=0
 #slicexy=Decimal('25') #Meters
 
-class grid:
-    def __init__(self, pipe): #constructor, pipe will be either cylinder or box 
+class grid: 
+    #wanna initialize, build grid, track particles, store location 
+    def __init__(self, pipe): #constructor, pipe is parameter (what we're passing in), will be either cylinder or box 
         self.pipe = pipe   
 
     def build_grid_map(self): #size of array sing slices in z, x, y determined in pipe 
         grid_map = np.zeros((self.pipe.z_slice(), self.pipe.x_slice(), self.pipe.y_slice())) #dont use class cylinder, it is now pipe bc not specific to shape 
         return grid_map
 
+
+#main function we're calling
     def countBubbles(self, num_steps, num_particles, Deff, interval):
         grid_map = self.build_grid_map()
         row_count = 0
-        prev_coordinate = self.pipe #pipe isn't a method. its an object, pipe is either cylinder or box 
-        out_of_pipe = 0
+        prev_coordinate = self.pipe #reassigning class (pipe is cyl or box) so now prev coord calls all functions within the class 
+        out_of_pipe = 0 #originally nothing out of pipe, reassigned later
 
-        for i in range (0, num_particles):
+        for i in range (0, num_particles): #white functions bc abstract 
             prev_coordinate.generate_coordinate() #pipe.x is initial coord
             #store location of initial point of each particle in the hashmap/ python dictionary
             grid_x = math.ceil(prev_coordinate.x/self.pipe.get_segmentsize())
@@ -58,7 +61,7 @@ class grid:
                 prev_coordinate.y = prev_coordinate.y + prev_coordinate.vy*interval + Decimal(psi_y*np.sqrt(2*Deff*interval))
                 prev_coordinate.z = prev_coordinate.z + prev_coordinate.vz*interval + Decimal(psi_z*np.sqrt(2*Deff*interval))
 
-                print(i, j) #particle then step of particle
+                print('particle number',i, 'moved', j, 'steps before leaving pipe') #particle then step of particle
                
                 #turn x,y,z into array loc
                 grid_x = math.ceil(prev_coordinate.x/self.pipe.get_segmentsize())
@@ -66,10 +69,8 @@ class grid:
 
                 if prev_coordinate.is_out_of_pipe(self.pipe):
                     out_of_pipe += 1
-                    print(i, prev_coordinate.x, prev_coordinate.y, prev_coordinate.z) #dont really need print all out of pipe particles
+                    print('particle', i, 'leaves pipe at', prev_coordinate.x, prev_coordinate.y, prev_coordinate.z) #dont really need print all out of pipe particles
                     break #stops for this particle, continues for loop for next, once particle is out, its out
-                    #key = 'out-of-pipe'
-                    #grid_map[key] += 1
         
                 #add if statement for x and y being out of pipe
                 else:
@@ -86,6 +87,6 @@ my_cylinder = cylinder(.116, L, 5) #passing in x, length, number of slices in x 
 my_grid = grid(my_cylinder) #bc mycylinder is the implementation of pipe (grid takes in parameter of type pipe (which doesnt exist) but cylinder is type pipe)
 my_grid.countBubbles(5, 5, Decimal('2.3E-15'), Decimal('.1')) #num_steps, num_particles, Deff, interval
 
-#my_box = box(2, 1.5, 6, 10) 
+#my_box = box(2, 1.5, 6, 10) #parameters of box are x, y, z, slicex
 #my_boxgrid = grid(my_box) #grid takes in object of type pipe, box is type pipe bc box(pipe)
 #my_boxgrid.countBubbles(5, 5, Decimal('2.3E-15'), Decimal('.1'))

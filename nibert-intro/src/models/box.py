@@ -4,7 +4,7 @@ import random
 from decimal import Decimal
 from pipe import pipe 
 
-class box(pipe):
+class box(pipe): #box is type pipe, pipe here is not parameter
 
 #member variables in pipe abstract, must declare here 
     x = Decimal('0')
@@ -35,17 +35,16 @@ class box(pipe):
         if (y%self.segmentsize != 0):
             self.slicey += 1
         
-    
+    #check this math
+    #on edge of pipe not centered at 0. if x = 0 or x, then y is anything. if x isnt 0 or x, y is either 0 or y
     def generate_coordinate(self):
-        self.x = random.uniform(0, float(self.x)) #on edge of pipe not centered at 0
-        self.y = random.uniform(0, float(self.y))
-        self.z = random.uniform(0, float(self.z)) #need self bc use outside of method, for the whole class
-        #R and theta only used in this method so local variables 
+        self.x = random.uniform(0, float(self.x)) 
+        if self.x != 0 or self.x != pipe.x: #pipe.x is original x value passed as parameter into box, not new one reassigned
+            self.y = random.choice(0, self.y)
+        self.z = random.uniform(0, float(self.z)) 
     
-    def calculate_velocity(self, dp, mu, x, y, z, interval, phi): #even tho dont use y, need it bc box needs a y
-        R = x/2
-        radius=Decimal(math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2))
-        self.vz=(-dp*(R**2-radius**2))/(4*mu*z) 
+    def calculate_velocity(self, dp, mu, x, y, z, interval, phi): 
+        self.vz = 5
 
     def get_segmentsize(self): 
         return self.segmentsize #length and width of each voxel

@@ -7,7 +7,7 @@ import random
 from decimal import Decimal
 from pipe import pipe 
 
-class cylinder(pipe):#telling class cylinder it is a pipe type, all methods defined in pipe must be implemented here
+class cylinder(pipe): #telling class cylinder it is a pipe type, all methods defined in pipe must be implemented here
 
 #member variables in pipe abstract, must declare here 
     x = Decimal('0')
@@ -28,9 +28,9 @@ class cylinder(pipe):#telling class cylinder it is a pipe type, all methods defi
         self.slicex =  slicex
         self.yc = radius #is located to the right of the y axis w length of radius
         self.segmentsize = Decimal(2*radius/slicex)
-        self.sliceZ = math.ceil(self.z/self.segmentsize)#number of slices, math.ceiling rounds up to nearest interger
-        if (z%self.segmentsize != 0): #modulus, if no remainder (pipe is exact number of slices).
-            #if pipe ends inbetween slices then add another slice to include edge and exiting particles
+        self.sliceZ = math.ceil(self.z/self.segmentsize) #number of slices, math.ceiling rounds up to nearest interger
+        if (z%self.segmentsize != 0): #modulus, if  remainder isn't 0...
+            #pipe ends inbetween slices then add another slice to include edge and exiting particles
             self.sliceZ += 1
         self.slicey = slicex
     
@@ -61,5 +61,5 @@ class cylinder(pipe):#telling class cylinder it is a pipe type, all methods defi
     
     def is_out_of_pipe(self, pipe):
         return self.z < 0 or self.z > pipe.z or math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2) > 2*pipe.x #use pipe bc this is og size
-
+#why is it pipe.z not cylinder? cylinder is type pipe but isn't this unique to clinder?
     
