@@ -1,3 +1,5 @@
+##dont use this file anymore, all of these classes exist under cylinder
+
 import numpy as np
 import math
 import random
@@ -27,7 +29,7 @@ class coordinate:
         self.xc = radius
         self.yc = radius #is located to the right of the y axis w length of radius
     
-    def generateCoordinate(self, R, L): #constructor
+    def generateCoordinate(self, R, L):
         theta = random.uniform(0, 2*math.pi)
         #random_radius = Decimal(random.uniform(0, float(R))) #do you want particle to start on pipe wall
         self.x = R*Decimal(str(math.cos(theta)))+self.xc  #on edge of pipe not centered at 0

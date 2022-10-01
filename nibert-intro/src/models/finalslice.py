@@ -10,8 +10,8 @@ from cylinder import cylinder
 from box import box
 
 #lengths in meters, time in seconds
-L=Decimal('.1')
-R=Decimal('.0508') #also where it is centered 4 inch diameter pipe
+L=Decimal('.005')
+R=Decimal('0.0005') #also where it is centered 
 
 phi=Decimal('1')
 dp=Decimal('.0145') #Pa = psi * .000145
@@ -33,10 +33,10 @@ class grid:
 
 
 #main function we're calling
-    def countBubbles(self, num_steps, num_particles, Deff, interval):
+    def countBubbles(self, num_steps, num_particles, Deff, interval): #pass in self.deff and interval here and remove from calc vel
         grid_map = self.build_grid_map()
         row_count = 0
-        prev_coordinate = self.pipe #reassigning class (pipe is cyl or box) so now prev coord calls all functions within the class 
+        prev_coordinate = self.pipe #reassigning class (pipe is cyl or box) so now prev coord calls all functions in pipe 
         out_of_pipe = 0 #originally nothing out of pipe, reassigned later
 
         for i in range (0, num_particles): #white functions bc abstract 
@@ -61,7 +61,7 @@ class grid:
                 prev_coordinate.y = prev_coordinate.y + prev_coordinate.vy*interval + Decimal(psi_y*np.sqrt(2*Deff*interval))
                 prev_coordinate.z = prev_coordinate.z + prev_coordinate.vz*interval + Decimal(psi_z*np.sqrt(2*Deff*interval))
 
-                print('particle number',i, 'moved', j, 'steps before leaving pipe') #particle then step of particle
+                print('particle number', i, 'moved', j, 'steps before leaving pipe') #particle then step of particle
                
                 #turn x,y,z into array loc
                 grid_x = math.ceil(prev_coordinate.x/self.pipe.get_segmentsize())

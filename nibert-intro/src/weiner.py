@@ -41,3 +41,5 @@ for i, col in zip(ziprun, colors): #matches each indiv particle to a color for e
     ax.plot3D(stop[:,0], stop[:,1], stop[:,2], c=col, marker='o');
 plt.title('brownian walk')
 plt.show()
+
+

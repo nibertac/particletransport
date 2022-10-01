@@ -1,7 +1,9 @@
 
+from xml.dom.xmlbuilder import DOMInputSource
 import numpy as np
 import math
-from coordinate import coordinate
+#renamed file, irrelevant .... 
+# from coordinate-dontuse.py import coordinate
 import random
 from decimal import Decimal
 
@@ -22,7 +24,7 @@ class grid:
     def __init__(self, slicexy, radius): #constructor, empty so grid()
         self.segmentsize = 2*radius/slicexy
         self.sliceZ = math.ceil(L/self.segmentsize)#number of slices, math.ceiling rounds up to nearest interger
-        if (L%self.segmentsize == 0): #modulus, if no remainder (pipe is exact number of slices).
+        if (L%self.segmentsize != 0): #modulus, if no remainder (pipe is exact number of slices).
             #if pipe ends inbetween slices then add another slice to include edge and exiting particles
             self.sliceZ += 1
         self.sliceXY = slicexy #number of slices in grid is same in xy direction
@@ -83,7 +85,7 @@ class grid:
         print('out-of-pipe', out_of_pipe)
 
 
-my_grid = grid(5,R)
+my_grid = grid(5,R) #number of slices in xy
 my_grid.countBubbles(R, 5, 5, Decimal('2.3E-15'), Decimal('.1')) 
 
 

@@ -13,7 +13,7 @@ class pipe(ABC): #dont know shape, but know we have to generate coordinate and c
 
     @abstractmethod #interface, no implementation of code. the class cylinder and box are gonna implement these methods
 
-    #only create methods here that are unique to each shape 
+    #only create methods here that are unique to each shape, gonna be defined in other files
     def generate_coordinate(self):
         pass
 

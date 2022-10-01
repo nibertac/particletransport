@@ -35,12 +35,14 @@ class box(pipe): #box is type pipe, pipe here is not parameter
         if (y%self.segmentsize != 0):
             self.slicey += 1
         
-    #check this math
+    #check this math, generatin spot on perimeter
     #on edge of pipe not centered at 0. if x = 0 or x, then y is anything. if x isnt 0 or x, y is either 0 or y
     def generate_coordinate(self):
         self.x = random.uniform(0, float(self.x)) 
         if self.x != 0 or self.x != pipe.x: #pipe.x is original x value passed as parameter into box, not new one reassigned
-            self.y = random.choice(0, self.y)
+            self.y = random.choice([0, self.y])  #anywhere on x axis on bottom (y=0) or top (y=slicey)
+        else:
+            self.y = random.uniform(0, self.y) #if particle along top or bottom, then y is either top or bottom
         self.z = random.uniform(0, float(self.z)) 
     
     def calculate_velocity(self, dp, mu, x, y, z, interval, phi): 

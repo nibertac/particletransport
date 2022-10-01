@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from coordinate import coordinate
+#from coordinate import coordinate...dont use this file anymore bruh
 
 dP=1400
 mu=.6

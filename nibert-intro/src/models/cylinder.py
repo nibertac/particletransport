@@ -9,7 +9,11 @@ from pipe import pipe
 
 class cylinder(pipe): #telling class cylinder it is a pipe type, all methods defined in pipe must be implemented here
 
+#whenever wanna call cylinder or box in other methods, pipe and cylinder switched, so whereevr we have method(pipe) pass word cylinder or box when implementing it later
+
+
 #member variables in pipe abstract, must declare here 
+#these are pipe.x, pipe.z in outofpipe method
     x = Decimal('0')
     y = Decimal('0')
     z = Decimal('0')
@@ -19,22 +23,22 @@ class cylinder(pipe): #telling class cylinder it is a pipe type, all methods def
     xc = Decimal('0')
     yc = Decimal('0')
 
-    #initializes class
-    def __init__(self, x, z, slicex): #constructor
-        self.x = x
+    #initializes class, can initialize w/ diff parameters than box
+    def __init__(self, x, z, slicex): #constructor, what we pass through
+        self.x = x #diameter
         self.z = z 
         radius = Decimal(x/2)
-        self.xc = radius
+        self.xc = radius #s coord of center of pipe
         self.slicex =  slicex
         self.yc = radius #is located to the right of the y axis w length of radius
-        self.segmentsize = Decimal(2*radius/slicex)
+        self.segmentsize = Decimal(2*radius/slicex) #we pass in the number of slices, get size (cm or mm of each voxel)
         self.sliceZ = math.ceil(self.z/self.segmentsize) #number of slices, math.ceiling rounds up to nearest interger
         if (z%self.segmentsize != 0): #modulus, if  remainder isn't 0...
             #pipe ends inbetween slices then add another slice to include edge and exiting particles
             self.sliceZ += 1
-        self.slicey = slicex
+        self.slicey = slicex #same number of slices in x and y dir for circle
     
-    def generate_coordinate(self):
+    def generate_coordinate(self): #starting location of particle is on surface of pipe
         theta = random.uniform(0, 2*math.pi)
         R = Decimal(self.x/2)
         self.x = R*Decimal(str(math.cos(theta)))+self.xc  #on edge of pipe not centered at 0
