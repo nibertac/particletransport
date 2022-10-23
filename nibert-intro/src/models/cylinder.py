@@ -24,32 +24,40 @@ class cylinder(pipe): #telling class cylinder it is a pipe type, all methods def
     yc = Decimal('0')
 
     #initializes class, can initialize w/ diff parameters than box
-    def __init__(self, x, z, slicex): #constructor, what we pass through
+    def __init__(self, x, z, slicex): #constructor, what we pass in
         self.x = x #diameter
-        self.z = z 
-        radius = Decimal(x/2)
-        self.xc = radius #s coord of center of pipe
-        self.slicex =  slicex
-        self.yc = radius #is located to the right of the y axis w length of radius
-        self.segmentsize = Decimal(2*radius/slicex) #we pass in the number of slices, get size (cm or mm of each voxel)
+        self.z = z #length
+        self.length = self.z
+        self.radius = Decimal(x/2)
+        self.xc = self.radius #s coord of center of pipe
+        self.slicex =  slicex #number of slices
+        self.yc = self.radius #is located to the right of the y axis w length of radius
+        self.segmentsize = Decimal(2*self.radius/slicex) #we pass in the number of slices, get size (cm or mm of each voxel)
         self.sliceZ = math.ceil(self.z/self.segmentsize) #number of slices, math.ceiling rounds up to nearest interger
-        if (z%self.segmentsize != 0): #modulus, if  remainder isn't 0...
+        if (self.z%self.segmentsize != 0): #modulus, if  remainder isn't 0...
             #pipe ends inbetween slices then add another slice to include edge and exiting particles
             self.sliceZ += 1
         self.slicey = slicex #same number of slices in x and y dir for circle
     
     def generate_coordinate(self): #starting location of particle is on surface of pipe
         theta = random.uniform(0, 2*math.pi)
-        R = Decimal(self.x/2)
-        self.x = R*Decimal(str(math.cos(theta)))+self.xc  #on edge of pipe not centered at 0
-        self.y = R*Decimal(str(math.sin(theta)))+self.yc
-        self.z = Decimal(str(random.uniform(0, float(self.z)))) #need self bc use outside of method, for the whole class
+        R = self.radius
+        self.r = Decimal(R) - Decimal(.01) #decided thickness of where particles can come from is .001 from external radius
+
+#do we wanna be able to change thickness a lot, so should we pass it in vs setting it as always .001 less than R
+        Rad =  random.uniform(float(self.r), float(R)) #choose radius for origin of particle
+    
+        self.x = Decimal(Rad)*Decimal(str(math.cos(theta)))+self.xc  #on edge of pipe not centered at 0
+        self.y = Decimal(Rad)*Decimal(str(math.sin(theta)))+self.yc
+        self.z = Decimal(str(random.uniform(0, float(self.length)))) #need self bc use outside of method, for the whole class, reassigned from init
         #R and theta only used in this method so local variables 
     
     def calculate_velocity(self, dp, mu, x, y, z, interval, phi): #even tho dont use y, need it bc box needs a y
-        R = x/2
-        radius=Decimal(math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2))
-        self.vz=(-dp*(R**2-radius**2))/(4*mu*z) 
+        #R = x/2
+        radius = Decimal(math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2))
+        self.vz = (-dp*(self.radius**2-radius**2))/(4*mu*self.length) 
+        self.vx = 0
+        self.vy = 0
 
     def get_segmentsize(self): 
         return self.segmentsize #length and width of each voxel
@@ -63,7 +71,7 @@ class cylinder(pipe): #telling class cylinder it is a pipe type, all methods def
     def x_slice(self):
         return self.slicex
     
-    def is_out_of_pipe(self, pipe):
-        return self.z < 0 or self.z > pipe.z or math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2) > 2*pipe.x #use pipe bc this is og size
-#why is it pipe.z not cylinder? cylinder is type pipe but isn't this unique to clinder?
-    
+    def is_out_of_pipe(self, pipe): #only return if the conditions below exist?
+        return self.z < 0 or self.z > self.length or math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2) > self.radius #use pipe bc this is og size
+# self.z is class variable (same variable for every method), the z coordinate we constantly reassign. 
+# pipe.z is original length of pipe, the length we pass into cylinder()

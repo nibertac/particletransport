@@ -47,6 +47,7 @@ class box(pipe): #box is type pipe, pipe here is not parameter
     
     def calculate_velocity(self, dp, mu, x, y, z, interval, phi): 
         self.vz = 5
+        #NEED AN EQUATION FOR VELOCITY IN A BOX 
 
     def get_segmentsize(self): 
         return self.segmentsize #length and width of each voxel
