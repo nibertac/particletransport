@@ -75,3 +75,5 @@ class cylinder(pipe): #telling class cylinder it is a pipe type, all methods def
         return self.z < 0 or self.z > self.length or math.sqrt((self.x-self.xc)**2+(self.y-self.yc)**2) > self.radius #use pipe bc this is og size
 # self.z is class variable (same variable for every method), the z coordinate we constantly reassign. 
 # pipe.z is original length of pipe, the length we pass into cylinder()
+
+#add separate counter for back at wall and out of pipe in dir of flow

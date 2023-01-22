@@ -1,0 +1,1 @@
+pip install mpl_scatter_density

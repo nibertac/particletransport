@@ -21,6 +21,9 @@ class box(pipe): #box is type pipe, pipe here is not parameter
         self.x = x
         self.y = y
         self.z = z 
+        self.width = self.x
+        self.height = self.y
+        self.length = self.z
         self.slicex = slicex
         self.xc = self.x/2
         self.yc = self.y/2
@@ -62,4 +65,4 @@ class box(pipe): #box is type pipe, pipe here is not parameter
         return self.slicex
 
     def is_out_of_pipe(self, pipe):
-        return self.z < 0 or self.z > pipe.z or self.x < 0 or self.x > pipe.x or self.y < 0 or self.y > pipe.y #use pipe bc this is og size
+        return self.z < 0 or self.z > self.length or self.x < 0 or self.x > self.width or self.y < 0 or self.y > self.height #use pipe bc this is og size
