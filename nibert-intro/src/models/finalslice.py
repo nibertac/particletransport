@@ -19,11 +19,11 @@ import mpl_scatter_density # adds projection='scatter_density'
 from matplotlib.colors import LinearSegmentedColormap
 
 #lengths in cm, time in seconds
-L=Decimal('1')
+L = Decimal('1')
 
 phi = Decimal('1')
 dp = L * Decimal('3.19') 
-mu = Decimal('.01') #.001 Pa*s = 1 cp 
+mu = Decimal('.01') #poise - .001 Pa*s = 1 cp 
 
 #diffusion coeff in cm/s
 class grid: 
@@ -74,8 +74,8 @@ class grid:
             y_coord.append(grid_y - 1)
             z_coord.append(grid_z - 1)
 
-            if (grid_x - 1) == xloc:
-                        twod_map[grid_y-1][grid_z-1] += 1 
+            if (grid_x - 1) == xloc: #also a counter, so index is location
+                twod_map[grid_y-1][grid_z-1] += 1 #any location where a particle is at the middle of x - add corresponding y and z to array
 
             for j in range (0, num_steps): #creating path of each particle in i number of particles
                 psi_x = Decimal(np.random.normal(0, 1))
@@ -104,14 +104,13 @@ class grid:
                     y_coord.append(grid_y - 1)
                     z_coord.append(grid_z - 1)
 
-                    if (grid_x - 1) == xloc:
-                        twod_map[grid_y-1][grid_z-1] += 1
+                if (grid_x - 1) == xloc:
+                    twod_map[grid_y-1][grid_z-1] += 1
 
-        sns.heatmap(twod_map, cmap = 'hot')
-        plt.show()
+        #plt.imshow(twod_map, cmap='viridis', interpolation='nearest')
 
-        plt.imshow(twod_map, cmap='viridis', interpolation='nearest')
-        plt.show()
+        sns.heatmap(twod_map, cmap = 'rainbow', annot=True)
+        
 #__________________________________________
 # creating figures
         fig = plt.figure(figsize=(10, 10))
@@ -131,9 +130,9 @@ class grid:
 
     
 #THIS IS WHAT I CHANGE EACH TIME
-my_cylinder = cylinder(.1, L, 15) #passing in x (diameter = .1cm), length, number of voxel in x dir
+my_cylinder = cylinder(.5, L, 15) #passing in x (diameter = .1cm), length, number of voxel in x dir
 my_grid = grid(my_cylinder) #bc mycylinder is the implementation of pipe (grid takes in parameter of type pipe (which doesnt exist) but cylinder is type pipe)
-my_grid.countBubbles(50, 50, Decimal('2.29E-5'), Decimal('.1')) #num_steps, num_particles, Deff, interval
+my_grid.countBubbles(50, 500, Decimal('2.29E-5'), Decimal('.1')) #num_steps, num_particles, Deff, interval
 
 #my_box = box(2, 1.5, 6, 10) #parameters of box are x, y, z, slicex
 #my_boxgrid = grid(my_box) #grid takes in object of type pipe, box is type pipe bc box(pipe)
