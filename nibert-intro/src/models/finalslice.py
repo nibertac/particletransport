@@ -112,7 +112,7 @@ class grid:
         sns.heatmap(twod_map, cmap = 'rainbow', annot=True)
         
 #__________________________________________
-# creating figures
+# creating BLUE figure
         fig = plt.figure(figsize=(10, 10))
         ax = fig.add_subplot(111, projection='3d')
   
@@ -120,7 +120,7 @@ class grid:
         img = ax.scatter(x_coord, y_coord, z_coord, marker='s', s = 200)
   
 # adding title and labels
-        ax.set_title("3D Heatmap")
+        ax.set_title("3D Location of each particle w steps")
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Z-axis')
@@ -130,9 +130,9 @@ class grid:
 
     
 #THIS IS WHAT I CHANGE EACH TIME
-my_cylinder = cylinder(.5, L, 15) #passing in x (diameter = .1cm), length, number of voxel in x dir
+my_cylinder = cylinder(.5, L, 5) #passing in x (diameter = .1cm), length, number of voxel in x dir
 my_grid = grid(my_cylinder) #bc mycylinder is the implementation of pipe (grid takes in parameter of type pipe (which doesnt exist) but cylinder is type pipe)
-my_grid.countBubbles(50, 500, Decimal('2.29E-5'), Decimal('.1')) #num_steps, num_particles, Deff, interval
+my_grid.countBubbles(500, 500, Decimal('2.29E-5'), Decimal('.1')) #num_steps, num_particles, Deff, interval
 
 #my_box = box(2, 1.5, 6, 10) #parameters of box are x, y, z, slicex
 #my_boxgrid = grid(my_box) #grid takes in object of type pipe, box is type pipe bc box(pipe)
